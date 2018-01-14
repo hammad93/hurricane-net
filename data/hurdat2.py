@@ -18,6 +18,7 @@ class hurdat2 :
     OUTPUT: Success / Failure dialogue
     '''
     def __init__(self) :
+        self.hurricanes = parse()
         return
     '''
     PURPOSE: Parse in HURDAT2 database
@@ -43,12 +44,10 @@ class hurdat2 :
                     # Iterate and read through best track entries
                     for i in range(int(storm_entries)) :
                         entry = raw.next().replace(' ', '').split(',')
-                        # Remove -999 placeholder for missing central pressure
+                        # Filter -999 placeholder for missing central pressure
                         entry = [None if x == "-999" else x for x in entry]
                         # Construct date and time based on first two columns
-                        print(int(entry[1][:2]))
                         timestamp = datetime.datetime(int(entry[0][:4]), int(entry[0][4:6]), int(entry[0][6:8]), int(entry[1][:2]), int(entry[1][3:]))
-                        print ([storm_id, storm_name, timestamp] + entry[2:-1])
                         # Add entry into our current database
                         db.append([storm_id, storm_name, timestamp] + entry[2:-1])
                 else :
