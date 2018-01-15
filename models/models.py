@@ -43,7 +43,7 @@ class models :
     [1] http://www.nhc.noaa.gov/verification/errors/1970-present_OFCL_v_BCD5_ind_ATL_TI_errors_noTDs.txt
     [2] http://www.nhc.noaa.gov/verification/pdfs/Error_Tabulation_File_Format.pdf
   '''
-  def parse(self, filename = "") :
+  def parse(self, filename = "1970-present_OFCL_v_BCD5_ind_ATL_TI_errors_noTDs.txt") :
     # Begin parsing by reading in line by line
     with open(filename) as raw :
       lines = raw.readlines()
