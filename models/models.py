@@ -8,6 +8,7 @@ OUTPUT: Forecast Error Database http://www.nhc.noaa.gov/verification/verify7.sht
 import pandas as pd
 import numpy as np
 import datetime
+from datetime import timedelta
 import io
 
 class model :
@@ -68,8 +69,8 @@ class models :
                     
           # Iterate through model forecast track and intensity errors 
           for i in range(len(model_names)) :
-            intensity_forecast = [None if x == "-9999.0" else float(x) for x in line[14 + (20 * i) : 24 + (20 * i)]]
-            track_forecast = [None if x == "-9999.0" else float(x) for x in line[24 + (20 * i) : 34 + (20 * i)]]
+            intensity_forecast = zip([timestamp, timestamp + timedelta(hours = 12), timestamp + timedelta(hours = 24), timestamp + timedelta(hours = 36), timestamp + timedelta(hours = 48), timestamp + timedelta(hours = 72), timestamp + timedelta(hours = 96), timestamp + timedelta(hours = 120), timestamp + timedelta(hours = 144), timestamp + timedelta(hours = 168)], [None if x == "-9999.0" else float(x) for x in line[14 + (20 * i) : 24 + (20 * i)]])
+            track_forecast = zip([timestamp, timestamp + timedelta(hours = 12), timestamp + timedelta(hours = 24), timestamp + timedelta(hours = 36), timestamp + timedelta(hours = 48), timestamp + timedelta(hours = 72), timestamp + timedelta(hours = 96), timestamp + timedelta(hours = 120), timestamp + timedelta(hours = 144), timestamp + timedelta(hours = 168)], [None if x == "-9999.0" else float(x) for x in line[24 + (20 * i) : 34 + (20 * i)]])
             self.models[model_names[i]].storm[storm_id] = {
               timestamp : {
                 "sample_sizes" : sample_sizes,
