@@ -20,9 +20,9 @@ class model :
   # Dictionary key: STMID
   storm = dict()
   
-  def __init_(self, model_name) :
+  def __init__(self, model_name) :
     self.name = model_name
-    return self
+    return
 
 class models :
   models = dict()
@@ -32,8 +32,8 @@ class models :
   METHOD: Read in the text file with the NHC model errors
   OUTPUT: Success / Failure dialogue
   '''
-  def __init__(self, ) :
-    self.models = parse()
+  def __init__(self) :
+    self.parse()
     return
   '''
   PURPOSE: Parse in the Forecast Error database
@@ -52,8 +52,7 @@ class models :
       line = lines[1].split()
       model_names = line[2:]
       for model_name in model_names :
-        model = model(model_name)
-        self.models["model_name"] = model
+        self.models[model_name] = model(model_name)
         
       # Data starts at line 9 
       for line in lines[9:] :
@@ -62,7 +61,7 @@ class models :
           # Identify atlantic storm date, storm id, associated sample sizes, latitude and longitude, and windspeed
           timestamp = datetime.datetime.strptime(line[0], "%d-%m-%Y/%H:%M:%S").timetuple()
           storm_id = line[1]
-          sample_sizes = dict("F012": float(line[2]), "F024": float(line[3]),"F036": float(line[4]), "F048": float(line[5]), "F072": float(line[6]), "F096": float(line[7]), "F120": float(line[8]), "F144": float(line[9]), "F168": float(line[10])) 
+          sample_sizes = {"F012": float(line[2]), "F024": float(line[3]),"F036": float(line[4]), "F048": float(line[5]), "F072": float(line[6]), "F096": float(line[7]), "F120": float(line[8]), "F144": float(line[9]), "F168": float(line[10])} 
           latitude = float(line[11])
           longitude = float(line[12])
           wind_speed = int(line[13])
@@ -70,12 +69,14 @@ class models :
           # Iterate through model forecast track and intensity errors 
           for i in range(len(model_names)) :
             intensity_forecast = [None if x == "-9999.0" else float(x) for x in line[14 + (20 * i) : 24 + (20 * i)]]
-            track_forecast = [None if x == "-9999.0" else float(x) for x in line[24 + (20 * i) : 34 + (20 * i)]
-            self.models[model_names[i]].storm[storm_id][timestamp] = {
-              "sample_sizes" = sample_sizes,
-              "lat" = latitude,
-              "long"  = longitude,
-              "wind_speed" = wind_speed,
-              "intensity_forecast" = intensity_forecast,
-              "track_forecast" = tack_forecast
+            track_forecast = [None if x == "-9999.0" else float(x) for x in line[24 + (20 * i) : 34 + (20 * i)]]
+            self.models[model_names[i]].storm[storm_id] = {
+              timestamp : {
+                "sample_sizes" : sample_sizes,
+                "lat" : latitude,
+                "long" : longitude,
+                "wind_speed" : wind_speed,
+                "intensity_forecast" : intensity_forecast,
+                "track_forecast" : track_forecast,
+              }
             }
