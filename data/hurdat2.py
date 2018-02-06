@@ -18,7 +18,7 @@ class hurdat2 :
     OUTPUT: Success / Failure dialogue
     '''
     def __init__(self) :
-        self.hurricanes = parse()
+        self.hurricanes = self.parse()
         return
     '''
     PURPOSE: Parse in HURDAT2 database
