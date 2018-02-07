@@ -17,8 +17,8 @@ class hurdat2 :
     METHOD: Read in the text file with the NHC data into hurricanes DataFrame
     OUTPUT: Success / Failure dialogue
     '''
-    def __init__(self) :
-        self.hurricanes = self.parse()
+    def __init__(self, filename = "hurdat2.txt") :
+        self.hurricanes = self.parse(filename)
         return
     '''
     PURPOSE: Parse in HURDAT2 database
@@ -27,7 +27,7 @@ class hurdat2 :
     REFERENCES:
         [1] http://www.nhc.noaa.gov/data/hurdat/hurdat2-format-atlantic.pdf
     '''
-    def parse(self, filename = "hurdat2.txt") :
+    def parse(self, filename = "/hurdat2.txt", encoding="utf-8") :
         db = []
         
         # Begin parsing by reading in line by line
@@ -40,10 +40,10 @@ class hurdat2 :
                     storm_id = line[0]
                     storm_name = line[1]
                     storm_entries = line[2]
-
+                    
                     # Iterate and read through best track entries
                     for i in range(int(storm_entries)) :
-                        entry = raw.next().replace(' ', '').split(',')
+                        entry = raw.readline().replace(' ', '').split(',')
                         # Filter -999 placeholder for missing central pressure
                         entry = [None if x == "-999" else x for x in entry]
                         # Construct date and time based on first two columns
