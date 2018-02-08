@@ -33,8 +33,8 @@ class models :
   METHOD: Read in the text file with the NHC model errors
   OUTPUT: Success / Failure dialogue
   '''
-  def __init__(self) :
-    self.parse()
+  def __init__(self, filename = "1970-present_OFCL_v_BCD5_ind_ATL_TI_errors_noTDs.txt") :
+    self.parse(filename)
     return
   '''
   PURPOSE: Parse in the Forecast Error database
