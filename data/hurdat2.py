@@ -40,7 +40,7 @@ class hurdat2 :
                     storm_id = line[0]
                     storm_name = line[1]
                     storm_entries = line[2]
-                    
+
                     # Iterate and read through best track entries
                     for i in range(int(storm_entries)) :
                         entry = raw.readline().replace(' ', '').split(',')
