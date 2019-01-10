@@ -1,6 +1,8 @@
 # hurricane-net
 A Python 3 deep learning framework for forecasting Atlantic hurricane trajectory and intensity. 
 
+![hurricane-net architecture](hurricane-net-architecture.png)
+
 ## Data & Inputs
 
 The following datasets and inputs including their sources will be used to create machine learning models:
