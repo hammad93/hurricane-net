@@ -107,7 +107,7 @@ I want you to act like a forecaster that gives a general idea of the future of t
 Please provide forecasts for 12, 24, 36, 48, 72, 96, 120 hours in the future from the most recent time in Figure 1.
 The response will be JSON formatted with "forecasts" as the only key. The value of the key is a list of forecast objects.
 Each forecast object has five attributes:
-    "id" which identifies the storm as WP922023
+    "id" which identifies the storm
     "time" which is the predicted time in ISO 8601 format
     "lat" which is the predicted latitude in decimal degrees
     "lon" which is the predicted longitude in decimal degrees
