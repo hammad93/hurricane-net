@@ -48,7 +48,8 @@ def chatgpt_forecast(prompt):
         messages=[
                 {"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
                 {"role": "user", "content": prompt},
-            ]
+            ],
+        functions=get_response_functions()
         )
     text = response["choices"][0]["message"]["content"]
     print(text)
@@ -125,3 +126,37 @@ In JSON,
         prompts.append(prompt)
         print(prompt)
     return prompts
+
+def get_response_functions():
+    '''
+    Return the JSON schema object.
+    '''
+    return [{
+    "name" : "get_forecast",
+    "description" : "The response structure of the forecasts the API expects",
+    "parameters" : {
+            "type": "object",
+            "items": {
+                "type": "object",
+                "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "time": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "lat": {
+                    "type": "number"
+                },
+                "lon": {
+                    "type": "number"
+                },
+                "wind_speed": {
+                    "type": "integer"
+                }
+                },
+                "required": ["id", "time", "lat", "lon", "wind_speed"]
+            }
+            }
+    }]
