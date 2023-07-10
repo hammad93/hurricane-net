@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lon": {
+            "type": "number"
+          },
+          "wind_speed": {
+            "type": "integer"
+          }
+        },
+        "required": ["id", "time", "lat", "lon", "wind_speed"]
+      }
+    },
+    {
+      "type": "string"
+    }
+  ]
+}
