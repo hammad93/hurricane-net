@@ -7,7 +7,7 @@ import openai
 import json
 import os
 
-def chatgpt_forecast_live():
+def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
     '''
     This will pull in the live storms across the globe and engineer
     prompts that will allow us to ingest forecasts from ChatGPT
@@ -23,10 +23,10 @@ def chatgpt_forecast_live():
     # capture the forecast from ChatGPT
     forecasts = []
     for prompt in prompts:
-        forecasts.append(chatgpt_forecast(prompt))
+        forecasts.append(chatgpt_forecast(prompt, model_version))
     return forecasts
 
-def chatgpt_forecast(prompt):
+def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo"):
     '''
     Given the prompt, this will pass it to the version of ChatGPT defined.
     It's meant for forecasts of global tropical storms but can have a range of options.
@@ -37,6 +37,8 @@ def chatgpt_forecast(prompt):
         The initial message to pass to ChatGPT
     system String
         The system message based on the current OpenAI API
+    model_version String
+        Which model to use
     
     Returns
     -------
@@ -44,7 +46,7 @@ def chatgpt_forecast(prompt):
     '''
     openai.api_key = os.environ.get('OPENAI_API_KEY')
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        model=model_version,
         messages=[
                 {"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
                 {"role": "user", "content": prompt},
