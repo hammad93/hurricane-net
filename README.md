@@ -1,9 +1,24 @@
 # hurricane-net
-A Python 3 deep learning framework for forecasting Atlantic hurricane trajectory and intensity. 
+A deep learning framework for forecasting Atlantic hurricane trajectory and intensity. 
 
+## ChatGPT
+
+### API Link
+
+fluids.ai:1337/docs
+
+### Development
+
+1. Open up Python environment and make sure `pip install openai`
+2. Set API password to `OPENAI_API_KEY` environment variable, e.g. `export OPENAI_API_KEY=password123`
+3. Run a python console (`$ python3`) and import the class by executing `import hurricane_net_chatgpt as chatgpt`
+
+## Bidirectional Recurrent Neural Network
+
+### Architecture
 ![hurricane-net architecture](docs/hurricane-net-architecture.png)
 
-## Data & Inputs
+### Data & Inputs
 
 The following datasets and inputs including their sources will be used to create machine learning models:
 - NHC Hurricane Database (HURDAT2)
