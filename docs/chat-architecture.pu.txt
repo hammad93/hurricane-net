@@ -1,0 +1,57 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam rectangle {
+  RoundCorner << 15 >>
+}
+
+package "Real Time Tropical Storm Data" {
+  [Storm Data Input]
+}
+
+package "Models" {
+  [Analytical Process]
+}
+
+package "Chat LLM" {
+  [Forecasting]
+  [Reflection]
+}
+
+[Storm Data Input] -down-> [Analytical Process]
+[Storm Data Input] -right-> [Forecasting]: Trajectory & Intensity
+
+package "Web Map Service" {
+  [Web Map]
+}
+
+[Forecasting] -down-> [Web Map]: Forecast Vector
+
+package "Translation & Audio" {
+  [Language Selection]
+  [Translation]
+  [Text-to-Speech]
+}
+
+[Web Map] -right-> [Language Selection]: Affected Areas
+
+package "Image & Video Generation" {
+  [Avatar Generation]
+  [Video Generation]
+  [Lipsync with Wav2Lip]
+  [News Reel Video]
+}
+
+[Text-to-Speech] -down-> [Avatar Generation]: Based on Storm Location
+
+package "Output Cache" {
+  database "Redis Cache on Azure" {
+    [Final Outputs]
+  }
+}
+
+[Lipsync with Wav2Lip] -right-> [Final Outputs]
+
+[Forecasting] -left-> [Reflection]: Ask for Accuracy
+[Reflection] -right-> [Forecasting]: Feedback Loop
+
+@enduml
