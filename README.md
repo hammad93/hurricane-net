@@ -1,7 +1,10 @@
 # hurricane-net
 A deep learning framework for forecasting Atlantic hurricane trajectory and intensity. 
 
-## ChatGPT
+## Large Language Models (LLM)
+Many LLM's are sequential models that incorporate deep learning. This includes work on chat enabled LLM's like ChatGPT.
+
+![hurricane-net LLM architecture](docs/chat-architecture.png)
 
 ### API Link
 
