@@ -1,11 +1,80 @@
 config = {
     'api_url' : 'http://fluids.ai:1337/'
 }
+threads = {}
 import requests
 import pandas as pd
 import openai
 import json
 import os
+
+def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
+    '''
+    Given the prompt, this will pass it to the version of ChatGPT defined.
+    It's meant for forecasts of global tropical storms but can have a range of options.
+
+    Input
+    -----
+    prompt String
+        The initial message to pass to ChatGPT
+    system String
+        The system message based on the current OpenAI API
+    model_version String
+        Which model to use
+    id String
+        The thread id, will be created if none exist.
+    
+    Returns
+    -------
+    pd.DataFrame
+    '''
+    global threads
+    openai.api_key = os.environ.get('OPENAI_API_KEY')
+
+    # generate thread or message
+    basic = [{"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
+      {"role": "user", "content": prompt}
+    ]
+    if id :
+      print(id)
+      # create id if it doesn't exist
+      if not threads.get(id, False)
+        print(f'Adding id, {id} to threads.')
+        threads[id] = basic
+      thread = threads[id]
+    else :
+      thread = basic
+            
+    response = openai.ChatCompletion.create(
+        model=model_version,
+        messages=thread
+    )
+    text = response["choices"][0]["message"]["content"]
+    print(text)
+    if id and threads.get(id, False) :
+      print(f"Adding response to thread {id}.")
+      threads[id] += [{"role": "user", "content": prompt},
+       {"role": "assistant", "content": text}]
+
+    # Find the indices of the first and last curly braces in the text
+    start_index = text.find('{')
+    end_index = text.rfind('}')
+
+    # Extract the JSON string from the text
+    json_string = text[start_index:end_index+1]
+    print(json_string)
+    # Parse the JSON string into a Python object
+    json_object = None
+    try :
+      json_object = json.loads(json_string)
+    except Exception as e :
+      print(f"Couldn't parse the JSON in the response, {e}")
+
+    return {
+        "text" : text,
+        "json" : json_object
+    }
+
 
 def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
     '''
