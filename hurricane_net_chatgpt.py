@@ -70,7 +70,7 @@ def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
     if id :
       print(id)
       # create id if it doesn't exist
-      if not threads.get(id, False)
+      if not threads.get(id, False):
         print(f'Adding id, {id} to threads.')
         threads[id] = basic
       thread = threads[id]
