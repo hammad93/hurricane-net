@@ -2,11 +2,43 @@ config = {
     'api_url' : 'http://fluids.ai:1337/'
 }
 threads = {}
+from string import Template
 import requests
 import pandas as pd
 import openai
 import json
 import os
+
+def storm_forecast_prompts_sequentially(data):
+  hours = [6, 12, 24, 48, 72, 96, 120]
+  prompt = Template('''Please provide  a forecast for $future hours in the future from the most recent time from the storm.
+  The response will be a JSON object with these attributes:
+      "id" which identifies the storm
+      "time" which is the predicted time in ISO 8601 format
+      "lat" which is the predicted latitude in decimal degrees
+      "lon" which is the predicted longitude in decimal degrees
+      "wind_speed" which is the predicted maximum sustained wind speed in knots.
+
+  Table 1. The historical records the includes columns representing measurements for the storm.
+  The wind_speed column is in knots representing the maxiumum sustained wind speeds.
+  The lat and lon are the geographic coordinates in decimal degrees.
+  time is sorted ascending in ISO 8601 format and the most recent time is the last entry.
+  $data
+  ''')
+  reflection_prompt = Template('''Please quality check the response. The following are requirements,
+  - It provides a forecast for $future hours in the future from the most recent time.
+  - It does not simply respond with the input data
+
+  Provide either True or False if it is an appropriate response. If it's False, add a comma and explain why and provide a better response.
+  ''')
+  return [
+    {
+      "forecast_hour" : hour,
+      "prompt" : prompt.substitute(future = hour, data = data),
+      "reflection" : reflection_prompt.substitute(future = hour)
+    }
+        for hour in hours
+  ]
 
 def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
     '''
