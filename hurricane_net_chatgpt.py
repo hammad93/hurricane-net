@@ -107,7 +107,7 @@ def storm_forecast_prompts_sequentially(data):
         for hour in hours
   ]
 
-def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=None):
+def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=False):
     '''
     Given the prompt, this will pass it to the version of ChatGPT defined.
     It's meant for forecasts of global tropical storms but can have a range of options.
@@ -178,10 +178,12 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
       config['chats'][id] += [{"role": "user", "content": prompt},
       {"role": "assistant", "content": text}]
 
+    # update metadata with model run version
+    version = {'model': model_version}
     return {
         "text" : text,
         "json" : json_object,
-        "metadata" : metadata
+        "metadata" : version if not metadata else {**metadata, **version}
     }
 
 
