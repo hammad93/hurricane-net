@@ -2,6 +2,8 @@ config = {
     'api_url' : 'http://fluids.ai:1337/'
 }
 from string import Template
+from datetime import timedelta
+import dateutil
 import concurrent.futures
 import time
 import requests
@@ -16,10 +18,10 @@ def chatgpt_reflection_forecast_concurrent():
   # validate the live data
   if len(live_storms) < 1 :
     return 'No storms currently around the world.'
-  
+
   # generate prompts for one of the storms
   # some storms have long history so we have to set a threshold
-  max_historical_track = 4 * 3 # days, approx if 6 hour interval
+  max_historical_track = 4 * 7 # days, approx if 6 hour interval
   tag = int(time.time()) # a unique tag to track the data
   final_results = []
   for storm in set(live_storms['id']):
@@ -29,7 +31,7 @@ def chatgpt_reflection_forecast_concurrent():
     storm_data_input = storm_data.drop(columns=['id', 'wind_speed_mph', 'wind_speed_kph']).to_json(indent=2, orient='records')
     print(storm_data_input)
     prompts = storm_forecast_prompts_sequentially(storm_data_input)
-    
+
     # execute prompts concurrently
     with concurrent.futures.ThreadPoolExecutor() as executor:
       results = list(executor.map(
@@ -62,16 +64,17 @@ def chatgpt_reflection_forecast_concurrent():
               ]
           )
       )
-    
+
     # add iteration to final results
-    final_results.append({
-        'id': storm,
-        'forecasts': [
-            (result['metadata']['forecast_hour'], result['json']) for result in results_reflection
-            ]
-        }
+    base_time = list(storm_data['time'])[0] # sorted desc this is the most recent
+    final_results.append([{
+          **result['json'], # dictionary unpacking
+          'id': storm,
+          'time': dateutil.parser.parse(base_time) + timedelta(hours=result['metadata']['forecast_hour']),
+          'metadata': result['metadata']
+      } for result in results_reflection if result['json']]
     )
-    
+
   # return the forecast after reflection
   return final_results
 
@@ -130,7 +133,7 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
     openai.api_key = os.environ.get('OPENAI_API_KEY')
 
     # generate chat or message
-    basic = [{"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
+    basic = [{"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible. Data provided are from official sources including NOAA."},
       {"role": "user", "content": prompt}
     ]
     if id :
