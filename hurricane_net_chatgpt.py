@@ -1,7 +1,6 @@
 config = {
     'api_url' : 'http://fluids.ai:1337/'
 }
-threads = {}
 from string import Template
 import requests
 import pandas as pd
@@ -13,7 +12,6 @@ def storm_forecast_prompts_sequentially(data):
   hours = [6, 12, 24, 48, 72, 96, 120]
   prompt = Template('''Please provide  a forecast for $future hours in the future from the most recent time from the storm.
   The response will be a JSON object with these attributes:
-      "id" which identifies the storm
       "time" which is the predicted time in ISO 8601 format
       "lat" which is the predicted latitude in decimal degrees
       "lon" which is the predicted longitude in decimal degrees
@@ -55,37 +53,40 @@ def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
         Which model to use
     id String
         The thread id, will be created if none exist.
-    
+
     Returns
     -------
     pd.DataFrame
     '''
-    global threads
+    global config
     openai.api_key = os.environ.get('OPENAI_API_KEY')
 
-    # generate thread or message
+    # generate chat or message
     basic = [{"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
       {"role": "user", "content": prompt}
     ]
     if id :
       print(id)
+      # create chats object if it doesn't exist
+      if not config.get('chats', False):
+        config['chats'] = {}
       # create id if it doesn't exist
-      if not threads.get(id, False):
-        print(f'Adding id, {id} to threads.')
-        threads[id] = basic
-      thread = threads[id]
+      if not config['chats'].get(id, False) :
+        print(f'Adding id, {id} to chat.')
+        config['chats'][id] = basic
+      chat = config['chats'][id]
     else :
-      thread = basic
-            
+      chat = basic
+
     response = openai.ChatCompletion.create(
         model=model_version,
-        messages=thread
+        messages=chat
     )
     text = response["choices"][0]["message"]["content"]
     print(text)
-    if id and threads.get(id, False) :
-      print(f"Adding response to thread {id}.")
-      threads[id] += [{"role": "user", "content": prompt},
+    if id and config['chats'].get(id, False) :
+      print(f"Adding response to chat {id}.")
+      config['chats'][id] += [{"role": "user", "content": prompt},
        {"role": "assistant", "content": text}]
 
     # Find the indices of the first and last curly braces in the text
@@ -140,7 +141,7 @@ def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo"):
         The system message based on the current OpenAI API
     model_version String
         Which model to use
-    
+
     Returns
     -------
     pd.DataFrame
