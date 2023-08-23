@@ -2,18 +2,84 @@ config = {
     'api_url' : 'http://fluids.ai:1337/'
 }
 from string import Template
+import concurrent.futures
+import time
 import requests
 import pandas as pd
 import openai
 import json
 import os
 
+def chatgpt_reflection_forecast_concurrent():
+  # get the live storms first
+  live_storms = get_live_storms()
+  # validate the live data
+  if len(live_storms) < 1 :
+    return 'No storms currently around the world.'
+  
+  # generate prompts for one of the storms
+  # some storms have long history so we have to set a threshold
+  max_historical_track = 4 * 3 # days, approx if 6 hour interval
+  tag = int(time.time()) # a unique tag to track the data
+  final_results = []
+  for storm in set(live_storms['id']):
+    # get the storm from the live data and sort by time
+    storm_data = live_storms.query(f"id == '{storm}'").sort_values(by='time', ascending=False).iloc[:max_historical_track]
+    # clean the data to prepare to use it for the prompt
+    storm_data_input = storm_data.drop(columns=['id', 'wind_speed_mph', 'wind_speed_kph']).to_json(indent=2, orient='records')
+    print(storm_data_input)
+    prompts = storm_forecast_prompts_sequentially(storm_data_input)
+    
+    # execute prompts concurrently
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      results = list(executor.map(
+          lambda p: chatgpt(*p),
+            [
+              (prompt["prompt"],
+                'gpt-3.5-turbo',
+                5,
+                f"{tag}_{storm}_{index}",
+                {
+                  'forecast_hour': prompt['forecast_hour']
+                })
+              for index, prompt in enumerate(prompts)
+              ]
+          )
+      )
+    # execute reflection prompts
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      results_reflection = list(executor.map(
+          lambda p: chatgpt(*p),
+            [
+              (prompt["reflection"],
+                'gpt-3.5-turbo',
+                5,
+                f"{tag}_{storm}_{index}",
+                {
+                  'forecast_hour': prompt['forecast_hour']
+                })
+              for index, prompt in enumerate(prompts)
+              ]
+          )
+      )
+    
+    # add iteration to final results
+    final_results.append({
+        'id': storm,
+        'forecasts': [
+            (result['metadata']['forecast_hour'], result['json']) for result in results_reflection
+            ]
+        }
+    )
+    
+  # return the forecast after reflection
+  return final_results
+
 def storm_forecast_prompts_sequentially(data):
   hours = [6, 12, 24, 48, 72, 96, 120]
   prompt = Template('''Please provide  a forecast for $future hours in the future from the most recent time from the storm.
   The response will be a JSON object with these attributes:
-      "time" which is the predicted time in ISO 8601 format
-      "lat" which is the predicted latitude in decimal degrees
+      "lat" which is the pred3icted latitude in decimal degrees
       "lon" which is the predicted longitude in decimal degrees
       "wind_speed" which is the predicted maximum sustained wind speed in knots.
 
@@ -38,7 +104,7 @@ def storm_forecast_prompts_sequentially(data):
         for hour in hours
   ]
 
-def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
+def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=None):
     '''
     Given the prompt, this will pass it to the version of ChatGPT defined.
     It's meant for forecasts of global tropical storms but can have a range of options.
@@ -53,6 +119,8 @@ def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
         Which model to use
     id String
         The thread id, will be created if none exist.
+    retries int
+        The amount of times to try the prompt again
 
     Returns
     -------
@@ -78,34 +146,39 @@ def chatgpt(prompt, model_version = "gpt-3.5-turbo", id = None):
     else :
       chat = basic
 
-    response = openai.ChatCompletion.create(
-        model=model_version,
-        messages=chat
-    )
-    text = response["choices"][0]["message"]["content"]
-    print(text)
+    json_object = False
+    # we retry until we get a parsable json
+    while json_object is False and retries > 1:
+      response = openai.ChatCompletion.create(
+          model=model_version,
+          messages=chat
+      )
+      text = response["choices"][0]["message"]["content"]
+      print(text)
+
+      # Find the indices of the first and last curly braces in the text
+      start_index = text.find('{')
+      end_index = text.rfind('}')
+
+      # Extract the JSON string from the text
+      json_string = text[start_index:end_index+1]
+      print(json_string)
+      # Parse the JSON string into a Python object
+      try :
+        json_object = json.loads(json_string)
+      except Exception as e :
+        print(f"Couldn't parse the JSON in the response. Retries: {retries}, {e}")
+      retries = retries - 1
+
     if id and config['chats'].get(id, False) :
       print(f"Adding response to chat {id}.")
       config['chats'][id] += [{"role": "user", "content": prompt},
-       {"role": "assistant", "content": text}]
-
-    # Find the indices of the first and last curly braces in the text
-    start_index = text.find('{')
-    end_index = text.rfind('}')
-
-    # Extract the JSON string from the text
-    json_string = text[start_index:end_index+1]
-    print(json_string)
-    # Parse the JSON string into a Python object
-    json_object = None
-    try :
-      json_object = json.loads(json_string)
-    except Exception as e :
-      print(f"Couldn't parse the JSON in the response, {e}")
+      {"role": "assistant", "content": text}]
 
     return {
         "text" : text,
-        "json" : json_object
+        "json" : json_object,
+        "metadata" : metadata
     }
 
 
