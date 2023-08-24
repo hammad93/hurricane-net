@@ -140,7 +140,7 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
     openai.api_key = os.environ.get('OPENAI_API_KEY')
 
     # generate chat or message
-    basic = [{"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible. Data provided are from official sources including NOAA."},
+    basic = [{"role": "system", "content": "Please act as a weather forecaster and a helpful assistant. Data provided are real time and from official sources including NOAA."},
       {"role": "user", "content": prompt}
     ]
     if id :
@@ -157,6 +157,15 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
       chat = basic
 
     json_object = False
+    def msg_to_json(msg):
+      # Find the indices of the first and last curly braces in the text
+      start_index = text.find('{')
+      end_index = text.rfind('}')
+
+      # Extract the JSON string from the text
+      json_string = text[start_index:end_index+1]
+      return json_string
+    
     # we retry until we get a parsable json
     while json_object is False and retries > 1:
       response = openai.ChatCompletion.create(
@@ -166,22 +175,26 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
       text = response["choices"][0]["message"]["content"]
       print(text)
 
-      # Find the indices of the first and last curly braces in the text
-      start_index = text.find('{')
-      end_index = text.rfind('}')
-
-      # Extract the JSON string from the text
-      json_string = text[start_index:end_index+1]
+      json_string = msg_to_json(text)
       print(json_string)
       # Parse the JSON string into a Python object
       try :
         json_object = json.loads(json_string)
       except Exception as e :
-        print(f"Couldn't parse the JSON in the response. Retries: {retries}, {e}")
+        # this could be a QA check that results in True so we flag it here,
+        if config['chats'].get(id, False) and text[:4].lower() == 'true':
+          # get the previous message response, if there is one
+          prev = config['chats'][id][-1]['content']
+          # set it as a json_object
+          try :
+            json_object = json.loads(msg_to_json(prev))
+          except :
+            print(f"Couldn't parse JSON even though it passed, {prev}")
+        print(f"Couldn't parse JSON in the response. Retries: {retries}, {e}")
       retries = retries - 1
 
     if id and config['chats'].get(id, False) :
-      print(f"Adding response to chat {id}.")
+      print(f"Adding response to chat history {id}.")
       config['chats'][id] += [{"role": "user", "content": prompt},
       {"role": "assistant", "content": text}]
 
@@ -192,7 +205,6 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
         "json" : json_object,
         "metadata" : version if not metadata else {**metadata, **version}
     }
-
 
 def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
     '''
