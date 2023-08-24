@@ -260,7 +260,7 @@ def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=5):
         print(text)
         # Parse the JSON string into a Python object
         try:
-            json_object = json.loads(msg_to_json(text)))
+            json_object = json.loads(msg_to_json(text))
         except Exception as e:
             retries = retries - 1
             print(f"Retries left: {retries}, error message: {e}")
