@@ -228,7 +228,7 @@ def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
         forecasts.append(chatgpt_forecast(prompt, model_version))
     return forecasts
 
-def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo"):
+def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=5):
     '''
     Given the prompt, this will pass it to the version of ChatGPT defined.
     It's meant for forecasts of global tropical storms but can have a range of options.
@@ -247,24 +247,23 @@ def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo"):
     pd.DataFrame
     '''
     openai.api_key = os.environ.get('OPENAI_API_KEY')
-    response = openai.ChatCompletion.create(
-        model=model_version,
-        messages=[
-                {"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
-                {"role": "user", "content": prompt},
-            ]
-        )
-    text = response["choices"][0]["message"]["content"]
-    print(text)
-    # Find the indices of the first and last curly braces in the text
-    start_index = text.find('{')
-    end_index = text.rfind('}')
-
-    # Extract the JSON string from the text
-    json_string = text[start_index:end_index+1]
-
-    # Parse the JSON string into a Python object
-    json_object = json.loads(json_string)
+    json_object = False
+    while retries > 0 and not json_object :
+        response = openai.ChatCompletion.create(
+            model=model_version,
+            messages=[
+                    {"role": "system", "content": "Please act as a forecaster and a helpful assistant. Responses should be based on historical data and forecasts must be as accurate as possible."},
+                    {"role": "user", "content": prompt},
+                ]
+            )
+        text = response["choices"][0]["message"]["content"]
+        print(text)
+        # Parse the JSON string into a Python object
+        try:
+            json_object = json.loads(msg_to_json(text)))
+        except Exception as e:
+            retries = retries - 1
+            print(f"Retries left: {retries}, error message: {e}")
 
     # Extract the relevant information from the object
     forecasts = json_object['forecasts']
