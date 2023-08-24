@@ -50,7 +50,7 @@ def chatgpt_reflection_forecast_concurrent():
       )
     # execute reflection prompts
     forecast_string = pd.DataFrame([{**result['json'],
-                                    'forecast_hour': result['metadata']['forecast_hour]
+                                    'forecast_hour': result['metadata']['forecast_hour']
                                    } for result in results]).to_json(indent=2, orient='records')
     with concurrent.futures.ThreadPoolExecutor() as executor:
       results_reflection = list(executor.map(
