@@ -49,11 +49,14 @@ def chatgpt_reflection_forecast_concurrent():
           )
       )
     # execute reflection prompts
+    forecast_string = pd.DataFrame([{**result['json'],
+                                    'forecast_hour': result['metadata']['forecast_hour]
+                                   } for result in results]).to_json(indent=2, orient='records')
     with concurrent.futures.ThreadPoolExecutor() as executor:
       results_reflection = list(executor.map(
           lambda p: chatgpt(*p),
             [
-              (prompt["reflection"],
+              (prompt["reflection"].substitute(future=prompt['forecast_hour'], forecast=forecast_string),
                 'gpt-3.5-turbo',
                 5,
                 f"{tag}_{storm}_{index}",
@@ -106,7 +109,7 @@ def storm_forecast_prompts_sequentially(data):
     {
       "forecast_hour" : hour,
       "prompt" : prompt.substitute(future=hour, data=data),
-      "reflection" : reflection_prompt.substitute(future=hour, forecast='')
+      "reflection" : reflection_prompt
     }
         for hour in hours
   ]
