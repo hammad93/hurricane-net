@@ -81,28 +81,32 @@ def chatgpt_reflection_forecast_concurrent():
 def storm_forecast_prompts_sequentially(data):
   hours = [6, 12, 24, 48, 72, 96, 120]
   prompt = Template('''Please provide  a forecast for $future hours in the future from the most recent time from the storm.
+  This forecast should be based on historical knowledge which includes but is not limited to storms with similar tracks and
+  intensities, time of year of the storm, geographical coordinates, and climate change that may have occured since your
+  previous training.
   The response will be a JSON object with these attributes:
-      "lat" which is the pred3icted latitude in decimal degrees
-      "lon" which is the predicted longitude in decimal degrees
+      "lat" which is the predicted latitude in decimal degrees.
+      "lon" which is the predicted longitude in decimal degrees.
       "wind_speed" which is the predicted maximum sustained wind speed in knots.
 
   Table 1. The historical records the includes columns representing measurements for the storm.
-  The wind_speed column is in knots representing the maxiumum sustained wind speeds.
-  The lat and lon are the geographic coordinates in decimal degrees.
-  time is sorted ascending in ISO 8601 format and the most recent time is the last entry.
+  - The wind_speed column is in knots representing the maxiumum sustained wind speeds.
+  - The lat and lon are the geographic coordinates in decimal degrees.
+  - time is sorted and the most recent time is the first entry.
   $data
   ''')
   reflection_prompt = Template('''Please quality check the response. The following are requirements,
-  - It provides a forecast for $future hours in the future from the most recent time.
-  - It does not simply respond with the input data
-
-  Provide either True or False if it is an appropriate response. If it's False, add a comma and explain why and provide a better response.
+  - The responses are numbers and not ranges.
+  - They align with other forecast hours provided.
+  $forecast
+  Response with either "True" or "False" based on the quality check. If it's False, provide a more accurate forecast for the original
+  $future hours in the future.
   ''')
   return [
     {
       "forecast_hour" : hour,
-      "prompt" : prompt.substitute(future = hour, data = data),
-      "reflection" : reflection_prompt.substitute(future = hour)
+      "prompt" : prompt.substitute(future=hour, data=data),
+      "reflection" : reflection_prompt.substitute(future=hour, forecast='')
     }
         for hour in hours
   ]
