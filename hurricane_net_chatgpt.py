@@ -101,9 +101,11 @@ def storm_forecast_prompts_sequentially(data):
   reflection_prompt = Template('''Please quality check the response. The following are requirements,
   - The responses are numbers and not ranges.
   - They align with other forecast hours provided.
+  This is an aggregated forecast produced by you and included for reference,
   $forecast
+  
   Response with either "True" or "False" based on the quality check. If it's False, provide a more accurate forecast for the original
-  $future hours in the future.
+  $future hours in the future. This prompt is given every time and it's possible that the original response is accurate.
   ''')
   return [
     {
