@@ -12,7 +12,7 @@ import openai
 import json
 import os
 
-def chatgpt_reflection_forecast_concurrent():
+def chatgpt_reflection_forecast_concurrent(model='gpt-3.5-turbo'):
   # get the live storms first
   live_storms = get_live_storms()
   # validate the live data
@@ -38,7 +38,7 @@ def chatgpt_reflection_forecast_concurrent():
           lambda p: chatgpt(*p),
             [
               (prompt["prompt"],
-                'gpt-3.5-turbo',
+                model,
                 5,
                 f"{tag}_{storm}_{index}",
                 {
@@ -57,7 +57,7 @@ def chatgpt_reflection_forecast_concurrent():
           lambda p: chatgpt(*p),
             [
               (prompt["reflection"].substitute(future=prompt['forecast_hour'], forecast=forecast_string),
-                'gpt-3.5-turbo',
+                model,
                 5,
                 f"{tag}_{storm}_{index}",
                 {
