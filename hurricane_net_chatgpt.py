@@ -159,14 +159,6 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
       chat = basic
 
     json_object = False
-    def msg_to_json(msg):
-      # Find the indices of the first and last curly braces in the text
-      start_index = text.find('{')
-      end_index = text.rfind('}')
-
-      # Extract the JSON string from the text
-      json_string = text[start_index:end_index+1]
-      return json_string
     
     # we retry until we get a parsable json
     while json_object is False and retries > 1:
@@ -207,6 +199,15 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
         "json" : json_object,
         "metadata" : version if not metadata else {**metadata, **version}
     }
+
+def msg_to_json(msg):
+  # Find the indices of the first and last curly braces in the text
+  start_index = text.find('{')
+  end_index = text.rfind('}')
+
+  # Extract the JSON string from the text
+  json_string = text[start_index:end_index+1]
+  return json_string
 
 def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
     '''
