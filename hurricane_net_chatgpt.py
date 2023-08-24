@@ -200,7 +200,7 @@ def chatgpt(prompt, model_version="gpt-3.5-turbo", retries=5, id=None, metadata=
         "metadata" : version if not metadata else {**metadata, **version}
     }
 
-def msg_to_json(msg):
+def msg_to_json(text):
   # Find the indices of the first and last curly braces in the text
   start_index = text.find('{')
   end_index = text.rfind('}')
