@@ -229,7 +229,7 @@ def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
                                     [(prompt, model_version) for prompt in prompts]))
     return forecasts
 
-def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=5):
+def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=10):
     '''
     Given the prompt, this will pass it to the version of ChatGPT defined.
     It's meant for forecasts of global tropical storms but can have a range of options.
@@ -262,14 +262,12 @@ def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=5):
         # Parse the JSON string into a Python object
         try:
             json_object = json.loads(msg_to_json(text))
+            # Extract the relevant information from the object
+            forecasts = json_object['forecasts']
+            return pd.DataFrame(forecasts)
         except Exception as e:
             retries = retries - 1
             print(f"Retries left: {retries}, error message: {e}")
-
-    # Extract the relevant information from the object
-    forecasts = json_object['forecasts']
-
-    return pd.DataFrame(forecasts)
 
 def get_live_storms():
     '''
