@@ -223,9 +223,10 @@ def chatgpt_forecast_live(model_version = "gpt-3.5-turbo"):
     live_storms = get_live_storms()
     prompts = get_prompts(live_storms)
     # capture the forecast from ChatGPT
-    forecasts = []
-    for prompt in prompts:
-        forecasts.append(chatgpt_forecast(prompt, model_version))
+    # do this concurrently because each prompt is independent
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+      forecasts = list(executor.map(lambda p: chatgpt_forecast(*p),
+                                    [(prompt, model_version) for prompt in prompts]))
     return forecasts
 
 def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=5):
