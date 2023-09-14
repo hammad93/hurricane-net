@@ -248,8 +248,7 @@ def chatgpt_forecast(prompt, model_version = "gpt-3.5-turbo", retries=10):
     pd.DataFrame
     '''
     openai.api_key = os.environ.get('OPENAI_API_KEY')
-    json_object = False
-    while retries > 0 and not json_object :
+    while retries > 0 :
         response = openai.ChatCompletion.create(
             model=model_version,
             messages=[
