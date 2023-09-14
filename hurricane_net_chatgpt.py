@@ -307,8 +307,8 @@ def get_prompts(df):
     # apply each storm to the prompt template
     for storm in unique_storms:
         prompt = f'''
-I want you to act like a forecaster that gives a general idea of the future of the storm even though it will not be an official forecast.
-Please provide forecasts for 12, 24, 36, 48, 72, 96, 120 hours in the future from the most recent time in Figure 1.
+I want you to act like a forecaster who gives a general idea of the future of the storm even though it will not be an official forecast.
+Please provide forecasts for 12, 24, 36, 48, and 72 hours in the future from the most recent time in Figure 1.
 The response will be JSON formatted with "forecasts" as the only key. The value of the key is a list of forecast objects.
 Each forecast object has five attributes:
     "id" which identifies the storm
@@ -317,10 +317,12 @@ Each forecast object has five attributes:
     "lon" which is the predicted longitude in decimal degrees
     "wind_speed" which is the predicted maximum sustained wind speed in knots.
 The response must be in JSON format, and the JSON characters must be at the beginning of the response.
-If you wish to add additional comments, it must be after the JSON data.
+If you wish to add additional comments, it must be after the JSON data. Avoid the following common mistakes,
+- Responding with some variation of the track input.
+- Not responding in the appropriate time steps.
 
-Figure 1. The historical records the includes columns representing measurements for storm {storm}.
-The wind_speed column is in knots representing the maxiumum sustained wind speeds.
+Figure 1. The historical records include columns representing measurements for storm {storm}.
+The wind_speed column is in knots representing the maximum sustained wind speeds.
 The lat and lon are the geographic coordinates in decimal degrees.
 
 In JSON,
