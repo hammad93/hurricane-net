@@ -1,11 +1,6 @@
 # hurricane-net
 A deep learning framework for forecasting Atlantic hurricane trajectory and intensity. 
 
-## Large Language Models (LLM)
-Many LLM's are sequential models that incorporate deep learning. This includes work on chat enabled LLM's like ChatGPT.
-
-![hurricane-net LLM architecture](docs/chat-architecture.png)
-
 ### API Link
 
 fluids.ai:1337/docs
@@ -36,6 +31,11 @@ The NHC HURDAT2 database contains the tracking information for Atlantic tropical
 
 The Forecast Error Database contains information on the accuracy of predicted models from the NHC. The two model forecast errors available are labeled OFCL and BCD5. The OFCL is the official NHC forecast and the BCD5 is the real track available. This data set can be used to benchmark and evaluate the deep learning model. 
 The NOAA and NHC also hosts a geographical information system (GIS) that contains raw and processed data on hurricanes. The server hosting the GIS is publicly accessible and can be used to evaluate our model by comparing the 2017 Atlantic tropical season. The preliminary best tracks can be found here before they are finalized and available in the HURDAT2 data set. With the GIS, we can construct a final evaluation data set. 
+
+## Large Language Models (LLM)
+Many LLM's are sequential models that incorporate deep learning. This includes work on chat enabled LLM's like ChatGPT.
+
+![hurricane-net LLM architecture](docs/chat-architecture.png)
 
 ### Enviornment
 
