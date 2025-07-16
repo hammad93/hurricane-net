@@ -21,7 +21,7 @@ class data :
           - https://www.ncei.noaa.gov/products/international-best-track-archive
         '''
         logging.info(f'Loading data with link for {link.split("/")[-1]}')
-        self.all_storms = pd.read_csv(link, low_memory=False)
+        self.all_storms = pd.read_csv(link, na_filter=False, dtype=str)
         logging.info('Loading complete. hn.data.all_storms available')
         self.filter(q) # creates self.storms
 
