@@ -1,0 +1,26 @@
+[project]
+name = "hurricane_net"
+version = "0.0.1"
+authors = [
+  { name="fluids", email="husmani@fluids.ai" },
+]
+description = "A small example package"
+readme = "README.md"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "CC0-1.0"
+license-files = ["LICEN[CS]E*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+hurricane_net = []
+"hurricane_net.prompts" = ["*.txt"]
+
+[project.urls]
+Homepage = "https://github.com/hammad93/hurricane-net"
+Issues = "https://github.com/hammad93/hurricane-agent/issues"
