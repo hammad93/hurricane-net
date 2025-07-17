@@ -1,0 +1,13 @@
+$daily_data
+
+Please provide a summary of the data ingested, provided above, for the purposes of
+forecasting tropical storms. Today is $timestamp and this report is generated daily.
+
+Include the following notifications,
+- Warning if there has been no recent data ingested for at least 24 hours
+- There are no forecasts
+- Any tropical storm that has reached at least a Category 1 on the Saffir Simpson scale
+- Any tropical storm that is forecasted to become a severe tropical storm (Category 3+)
+- Rapidly intensifying storms
+
+Use this to create a report and respond in HTML.

@@ -3,13 +3,7 @@ A deep learning framework for forecasting Atlantic hurricane trajectory and inte
 
 ### API Link
 
-fluids.ai:1337/docs
-
-### Development
-
-1. Open up Python environment and make sure `pip install openai`
-2. Set API password to `OPENAI_API_KEY` environment variable, e.g. `export OPENAI_API_KEY=password123`
-3. Run a python console (`$ python3`) and import the class by executing `import hurricane_net_chatgpt as chatgpt`
+https://nfc.ai/mcp/docs
 
 ## Bidirectional Recurrent Neural Network
 
@@ -32,11 +26,19 @@ The NHC HURDAT2 database contains the tracking information for Atlantic tropical
 The Forecast Error Database contains information on the accuracy of predicted models from the NHC. The two model forecast errors available are labeled OFCL and BCD5. The OFCL is the official NHC forecast and the BCD5 is the real track available. This data set can be used to benchmark and evaluate the deep learning model. 
 The NOAA and NHC also hosts a geographical information system (GIS) that contains raw and processed data on hurricanes. The server hosting the GIS is publicly accessible and can be used to evaluate our model by comparing the 2017 Atlantic tropical season. The preliminary best tracks can be found here before they are finalized and available in the HURDAT2 data set. With the GIS, we can construct a final evaluation data set. 
 
-## Large Language Models (LLM)
-Many LLM's are sequential models that incorporate deep learning. This includes work on chat enabled LLM's like ChatGPT.
-
-![hurricane-net LLM architecture](docs/chat-architecture.png)
-
 ### Enviornment
 
 Runtime enviornment was on a remote virtual machine with a Jupyter notebook through http access. Use the following command: `jupyter notebook --ip=0.0.0.0 --port=8080 --no-browser`
+
+## License
+
+CC0 1.0 Universal
+
+    CREATIVE COMMONS CORPORATION IS NOT A LAW FIRM AND DOES NOT PROVIDE
+    LEGAL SERVICES. DISTRIBUTION OF THIS DOCUMENT DOES NOT CREATE AN
+    ATTORNEY-CLIENT RELATIONSHIP. CREATIVE COMMONS PROVIDES THIS
+    INFORMATION ON AN "AS-IS" BASIS. CREATIVE COMMONS MAKES NO WARRANTIES
+    REGARDING THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS
+    PROVIDED HEREUNDER, AND DISCLAIMS LIABILITY FOR DAMAGES RESULTING FROM
+    THE USE OF THIS DOCUMENT OR THE INFORMATION OR WORKS PROVIDED
+    HEREUNDER.
