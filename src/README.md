@@ -70,6 +70,10 @@ The `Prompt` class provides functionality to generate reports using predefined t
 - [IBTrACS Documentation](https://www.ncei.noaa.gov/products/international-best-track-archive)
 - [IBTrACS v04r01 Column Documentation](https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2025-04/IBTrACS_v04r01_column_documentation.pdf)
 
+## Troubleshooting
+
+- [Python Package](https://github.com/hammad93/hurricane-net/issues/19)
+
 ## License
 
 This package is open source. Please see the LICENSE file for more information.
