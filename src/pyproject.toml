@@ -1,6 +1,6 @@
 [project]
 name = "hurricane_net"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="fluids", email="husmani@fluids.ai" },
 ]
