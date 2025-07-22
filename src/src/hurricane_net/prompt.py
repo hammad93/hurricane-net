@@ -14,7 +14,8 @@ class Prompt:
         ----------
          - https://setuptools.pypa.io/en/latest/userguide/datafiles.html#accessing-data-files-at-runtime
         '''
-        return files(resource_path).joinpath(filename).read_text()
+        raw_prompt = files(resource_path).joinpath(filename).read_text()
+        return PromptTemplate.from_template(raw_prompt)
     
     def prompt_daily_report(self, filename = 'daily_report.txt'):
         return self.load_prompt(filename)

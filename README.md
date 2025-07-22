@@ -10,6 +10,14 @@ https://nfc.ai/mcp/docs
 ### Architecture
 ![hurricane-net architecture](docs/hurricane-net-architecture.png)
 
+### Python Package
+
+#### Useful Commands
+- `python -m build`
+- `pip install hurricane_net-0.0.1-py3-none-any.whl`
+- `pip uninstall hurricane_net`
+- `twine upload dist/*`
+
 ### Data & Inputs
 
 The following datasets and inputs including their sources will be used to create machine learning models:
