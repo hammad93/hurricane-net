@@ -1,10 +1,10 @@
 [project]
 name = "hurricane_net"
-version = "0.0.3"
+version = "0.1.4"
 authors = [
   { name="fluids", email="husmani@fluids.ai" },
 ]
-description = "A small example package"
+description = "A Python package that provides tropical storm and hurricane data, tools, and artificial intelligence."
 readme = "README.md"
 requires-python = ">=3.9"
 classifiers = [

@@ -1,13 +1,28 @@
+This message is valid at {timestamp}. The following data is named daily_data
+and in JSON format:
+
 {daily_data}
 
-Please provide a summary of the data ingested, provided above, for the purposes of
-forecasting tropical storms. Today is {timestamp} and this report is generated daily.
+===============================================================================
 
-Include the following notifications,
-- Warning if there has been no recent data ingested for at least 24 hours
-- There are no forecasts
-- Any tropical storm that has reached at least a Category 1 on the Saffir Simpson scale
-- Any tropical storm that is forecasted to become a severe tropical storm (Category 3+)
-- Rapidly intensifying storms
+Provide a summary report of daily_data by responding in HTML format. Include
+the following notifications for the report based on the variables including,
+but not limited to, wind speed, location, and timestamps of the data points:
 
-Use this to create a report and respond in HTML.
+- [HI] Rapidly intensifying storms based on wind speed
+- [HI] Tropical storm(s) that currently have wind speeds that registers it as a
+  Category 3 or higher according to the Saffir Simpson scale
+- [LO] Tropical storm(s) that currently have wind speeds that registers it as a
+  Category 1 or 2 according to the Saffir Simpson scale
+- [LO] Tropical storm(s) that have reached at least a Category 1 on the Saffir
+  Simpson scale
+- [HI] Any tropical storm that is forecasted to become or remain a severe
+  hurricane (Category 3+)
+- [LO] No forecast data points in daily_data
+- [LO] No recent updates in data. For example, the most recent timestamp in the
+  wind speed observations is a day or more before the valid time.
+
+The notifcations are categorized by [HI] high severity or [LO] lower severity.
+
+The response will be utilized to create a daily report. The response must be in
+a valid HTML format that renders correct and compelling user experiences.
