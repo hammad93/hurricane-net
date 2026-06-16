@@ -29,15 +29,17 @@ import hurricane_net as hn
 
 ### Loading and Filtering Data
 
-1. **Initialize the Data Loader**
+1. **Load Latest Data**
 
-   Load the IBTrACS data from a specified URL. The default URL points to the IBTrACS database.
+   Load the IBTrACS data from a specified URL. The default URL points to the IBTrACS database. Run this again to update data to the latest.
 
    ```python
    data_loader = hn.data()
    ```
 
-2. **Filter Data**
+   Note that this requires internet so that the latest data is available.
+
+2. **Create Data Frame**
 
    Filter the data based on different criteria. For example, to get all storms, Atlantic storms, or hurricanes:
 
@@ -68,7 +70,7 @@ The `Prompt` class provides functionality to generate reports using predefined t
 
 - [IBTrACS Data Access](https://www.ncei.noaa.gov/data/international-best-track-archive-for-climate-stewardship-ibtracs/v04r01/access/csv/)
 - [IBTrACS Documentation](https://www.ncei.noaa.gov/products/international-best-track-archive)
-- [IBTrACS v04r01 Column Documentation](https://www.ncei.noaa.gov/sites/g/files/anmtlf171/files/2025-04/IBTrACS_v04r01_column_documentation.pdf)
+- [IBTrACS v04r01 Column Documentation](https://www.ncei.noaa.gov/sites/default/files/2025-09/IBTrACS_v04r01_column_documentation.pdf)
 
 ## Troubleshooting
 
