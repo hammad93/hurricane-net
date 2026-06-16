@@ -12,7 +12,7 @@ https://nfc.ai/mcp/docs
 
 ### Python Package
 
-#### Useful Commands
+#### Build Commands
 - `python -m build`
 - `pip install hurricane_net-0.0.1-py3-none-any.whl`
 - `pip uninstall hurricane_net`

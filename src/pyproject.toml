@@ -13,6 +13,10 @@ classifiers = [
 ]
 license = "CC0-1.0"
 license-files = ["LICEN[CS]E*"]
+dependencies = [
+    "pandas",
+    "langchain"
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
