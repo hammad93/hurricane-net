@@ -61,6 +61,17 @@ import hurricane_net as hn
 
    The package logs all major actions, such as data loading and filtering, to help trace operations.
 
+#### Basins
+```
+        NA - North Atlantic
+        EP - Eastern North Pacific
+        WP - Western North Pacific
+        NI - North Indian
+        SI - South Indian
+        SP - Southern Pacific
+        SA - South Atlantic
+```
+
 ### Generating Reports
 
 The `Prompt` class provides functionality to generate reports using predefined templates.
